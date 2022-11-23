@@ -1,0 +1,46 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Toots</title>
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <style>
+      body {background-color: #282c37; color: #fff; font-family: Verdana, sans-serif;}
+      div {line-height: 1.5em; padding: 1em; border-bottom: 1px solid #111;}
+      a {color: #8c8dff;}
+      img {width: 30%};
+    </style>
+  </head>
+  <body>
+    <script type=text/javascript>
+      const RSS = "https://kafeneio.social/@koustompola.rss";
+      fetch(RSS)
+        .then(response => response.text())
+        .then(str => new window.DOMParser().parseFromString(str, "text/xml"))
+        .then(data =>
+          {
+            const items = data.querySelectorAll("item");
+            items.forEach(el => {
+              let div = document.createElement("div");
+              div.innerHTML += `${el.querySelector("description").textContent}`;
+            let media = el.getElementsByTagName("media:content")[0];
+            if (media != undefined) {
+              let type = media.getAttribute("type");
+              if (type.includes("image")) {
+                let img = document.createElement("img");
+                img.src = media.getAttribute("url");
+                div.append(img);
+              }
+              if (type.includes("video")) {
+                let video = document.createElement("video");
+                video.src = media.getAttribute("url");
+                div.append(video);
+              }
+            }
+            document.body.append(div);
+            });
+          })
+    </script>
+  </body>
+</html>
